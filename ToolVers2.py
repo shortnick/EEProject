@@ -24,9 +24,9 @@ noDataVal = arcpy.GetParameterAsText(5)
 outText   = arcpy.GetParameterAsText(6)
 
 
-selectExpression = "\"" + str(inField) + "\" = " + "'"+str(inID)+"'"
+selectExpression = "\"" + inField + "\" = " + "'"+inID+"'"
 
-inShape = "cutter"+inID+".shp"
+inShape = "cutter"+inID
 arcpy.FeatureClassToFeatureClass_conversion (inFile, destination, inShape, selectExpression)
 
 
