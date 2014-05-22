@@ -50,9 +50,21 @@ outfile = open(outText, "w")
 pull_cursor = arcpy.da.SearchCursor(newRaster, ["Value", "Count"])
 
 
+#messing with creating a table for .xls ouput. where are the functions that reduce the attribute table by a few columns?
+#and can it export that straight to Excel?
+
+arcpy.CreateTable_management (destination, tempTable)
+
+
+
+
 for my_row in pull_cursor:
-    val = my_row[0]
-    count = my_row[1]
+    with arcpy.da.UpdateCursor("tempTable",["NAME","FEATURE","TOT_ENP"],'"NAME"=\'Koyuk\'') as my_cursor:
+    for landcover in my_cursor:
+        val = my_row[0]
+        count = my_row[1]
+        my_cursor.updateRow(landcover)
+    
     outfile.write(str(val) + " , " + str(count) + "\n")
     
 outfile.close()
