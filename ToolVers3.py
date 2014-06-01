@@ -3,8 +3,10 @@ sys.path.append('C:\\Program Files (x86)\\ArcGIS\\Desktop10.2\\bin')
 sys.path.append('C:\\Program Files (x86)\\ArcGIS\\Desktop10.2\\arcpy')
 sys.path.append('C:\\Program Files (x86)\\ArcGIS\\Desktop10.2\\ArcToolbox\\Scripts')
 import arcpy
+import csv
 
 destination = arcpy.env.workspace
+arcpy.env.overwriteOutput = True
 
 # gets the files and variables from user
 #first polygon file
@@ -44,15 +46,20 @@ arcpy.Clip_management(inRaster, rectangle ,newRaster, inShape, noDataVal, "Clipp
 
 arcpy.BuildRasterAttributeTable_management(newRaster, "Overwrite")
 
-# outputs the value and count fields into a text file
-outfile = open(outText, "w")
+#arcpy.CreateTable_management(destination, xls_holder, newRaster)
+
+
 
 pull_cursor = arcpy.da.SearchCursor(newRaster, ["Value", "Count"])
+newFile = outText+".csv"
+with open(newFile, 'wb') as csvfile:
+    writes = csv.writer(csvfile, dialect='excel')
+    writes.writerow(["Landcover Class", "Pixels"])
+    for my_row in pull_cursor:
+        val = my_row[0]
+        count = my_row[1]
+        
+        writes.writerow([val, count])
+    csvfile.close()
 
-
-for my_row in pull_cursor:
-    val = my_row[0]
-    count = my_row[1]
-    outfile.write(str(val) + " , " + str(count) + "\n")
     
-outfile.close()
